@@ -1,0 +1,31 @@
+<mat-toolbar color="light">
+    <span>Library Management System</span>
+    <span class="example-spacer"></span>
+     <div class="profile">
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+
+    <button mat-button [matMenuTriggerFor]="menu">
+      Admin
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item>
+    <mat-icon>person</mat-icon>
+    Profile
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon>settings</mat-icon>
+    Settings
+  </button>
+
+  <button mat-menu-item>
+    <mat-icon>logout</mat-icon>
+    Logout
+  </button>
+</mat-menu>

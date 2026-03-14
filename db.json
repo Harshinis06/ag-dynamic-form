@@ -1,0 +1,106 @@
+{
+  "books": [
+    {
+      "id": "B001",
+      "title": "Angular Essentials",
+      "author": "John Doe",
+      "publishedDate": "2022-05-10",
+      "status": "Borrowed",
+      "borrowedBy": "M101",
+      "borrowedDate": "2026-01-25",
+      "dueDate": "2026-02-05"
+    },
+    {
+      "id": "B002",
+      "title": "Reactive Programming",
+      "author": "Michael Smith",
+      "publishedDate": "2021-08-12",
+      "status": "Overdue",
+      "borrowedBy": "M102",
+      "borrowedDate": "2026-01-10",
+      "dueDate": "2026-01-25"
+    },
+    {
+      "id": "B003",
+      "title": "Clean Code",
+      "author": "Robert Martin",
+      "publishedDate": "2019-03-20",
+      "status": "Returned",
+      "borrowedBy": "M103",
+      "borrowedDate": "2026-01-05",
+      "dueDate": "2026-01-15"
+    },
+    {
+      "id": "B004",
+      "title": "Design Patterns",
+      "author": "Erich Gamma",
+      "publishedDate": "2018-11-02",
+      "status": "Available"
+    },
+    {
+      "id": "B005",
+      "title": "Atomic Habits",
+      "author": "James Clear",
+      "publishedDate": "2020-07-15",
+      "status": "Borrowed",
+      "borrowedBy": "M104",
+      "borrowedDate": "2026-02-01",
+      "dueDate": "2026-02-10"
+    }
+  ],
+
+  "members": [
+    {
+      "bookId": "B001",
+      "title": "Angular Essentials",
+      "status": "Borrowed",
+      "borrowedDate": "2026-01-25",
+      "dueDate": "2026-02-05",
+      "memberId": "M101",
+      "memberName": "Alice Johnson",
+      "totalDue": 0,
+      "paymentStatus": "Paid",
+      "phoneNumber": "9876543210",
+      "address": "Chennai, Tamil Nadu"
+    },
+    {
+      "bookId": "B002",
+      "title": "Reactive Programming",
+      "status": "Overdue",
+      "borrowedDate": "2026-01-10",
+      "dueDate": "2026-01-25",
+      "memberId": "M102",
+      "memberName": "Michael Lee",
+      "totalDue": 150,
+      "paymentStatus": "Unpaid",
+      "phoneNumber": "9123456789",
+      "address": "Bangalore, Karnataka"
+    },
+    {
+      "bookId": "B003",
+      "title": "Clean Code",
+      "status": "Returned",
+      "borrowedDate": "2026-01-05",
+      "dueDate": "2026-01-15",
+      "memberId": "M103",
+      "memberName": "Sarah Kim",
+      "totalDue": 0,
+      "paymentStatus": "Paid",
+      "phoneNumber": "9000123456",
+      "address": "Hyderabad, Telangana"
+    },
+    {
+      "bookId": "B005",
+      "title": "Atomic Habits",
+      "status": "Borrowed",
+      "borrowedDate": "2026-02-01",
+      "dueDate": "2026-02-10",
+      "memberId": "M104",
+      "memberName": "David Garcia",
+      "totalDue": 0,
+      "paymentStatus": "Paid",
+      "phoneNumber": "9988776655",
+      "address": "Coimbatore, Tamil Nadu"
+    }
+  ]
+}
