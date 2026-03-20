@@ -1,0 +1,30 @@
+<mat-sidenav-container class="sidenav-container" >
+
+  <mat-sidenav mode="side" [opened]="isSidebarOpen" class="sidenav">
+
+    <mat-nav-list>
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
+        <span>Dashboard</span>
+      </a>
+
+      <a mat-list-item routerLink="/books" routerLinkActive="active-link">
+        <span>Books</span>
+      </a>
+
+      <a mat-list-item routerLink="/members" routerLinkActive="active-link">
+        <span>Members</span>
+      </a>
+
+      <a mat-list-item routerLink="/borrow" routerLinkActive="active-link">
+        <span>Borrow / Return</span>
+      </a>
+
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+      <router-outlet></router-outlet>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

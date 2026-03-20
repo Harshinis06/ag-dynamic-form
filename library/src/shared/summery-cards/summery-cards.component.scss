@@ -1,0 +1,28 @@
+.example-card {
+    max-width: 250px;
+    display: flex;
+}
+
+mat-card {
+    display: flex;
+    margin: 20px;
+    gap: 16px;
+}
+
+mat-icon {
+    gap: 16px;
+    display: flex;
+    padding: 16px;
+    font-size: xx-large;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+}
+
+mat-card-content {
+    font-size: xx-large;
+    text-align: center;
+}

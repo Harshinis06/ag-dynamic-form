@@ -1,4 +1,4 @@
-interface Member {
+export interface Member {
   bookId?: string; 
   title?: string; 
   status?: string;

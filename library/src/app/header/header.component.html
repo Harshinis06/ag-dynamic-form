@@ -1,7 +1,13 @@
 <mat-toolbar color="light">
+  <div class="menu-button">
+    <button mat-icon-button (click)="toggleSidebar()">
+      <mat-icon [class.rotate]="isMenuOpen" class="menu">{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+    </button>
     <span>Library Management System</span>
-    <span class="example-spacer"></span>
-     <div class="profile">
+  </div>
+
+  <span class="example-spacer"></span>
+  <div class="profile">
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>account_circle</mat-icon>
     </button>

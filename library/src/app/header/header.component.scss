@@ -1,11 +1,29 @@
-// /
+mat-toolbar {
+  height: 70px;
+  background: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 0 24px;
+}
 
-.example-spacer {
-  flex: auto;
+.menu-button span {
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .profile {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+}
+
+.example-spacer {
+  flex: 1;
+}
+.menu-button{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+mat-sidenav.rotate {
+  width: 70px;
 }
