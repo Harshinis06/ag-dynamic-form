@@ -1,3 +1,17 @@
-<div class="w-100" >
+<div class="w-100">
     <app-summery-cards [data]="cardsData" style="display: flex;"></app-summery-cards>
+</div>
+<div>
+    <mat-form-field appearance="outline">
+        <mat-label>Search</mat-label>
+        <input matInput type="search" placeholder="Type to search..." #searchInput 
+        (keyup.enter)="search(searchInput)"  (input)="!searchInput.value && resetData()">
+        <button class="searchIcon" matSuffix mat-icon-button aria-label="Search" type="submit" (click)="search(searchInput)">
+            <mat-icon matSuffix>search</mat-icon>
+        </button>
+    </mat-form-field>
+</div>
+<div>
+    <app-client-ag-grid [rowData]="filteredMembers" [colDefs]="getColDefsForGrid()">
+    </app-client-ag-grid>
 </div>
