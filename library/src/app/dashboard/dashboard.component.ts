@@ -12,12 +12,15 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { DeleteCellRenderer } from '../../shared/deleteRendere.component';
+import { MatButtonModule } from '@angular/material/button';
+import { dashboardCardDefinitions } from './dashboard-cards.config';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, SummeryCardsComponent, ClientAgGridComponent,
-    FormsModule, MatFormFieldModule, MatInputModule, MatIconModule
+  imports: [CommonModule, SummeryCardsComponent, ClientAgGridComponent, DeleteCellRenderer,
+    FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatInputModule, MatButtonModule
   ],
   providers: [BookServiceService, MembersService],
   templateUrl: './dashboard.component.html',
@@ -54,7 +57,7 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         this.books = res.books;
         this.members = res.members;
-        this.cardsData = this.getbuildCards();
+        this.cardsData = this.buildCards(this.books, this.members);
 
         this.alldata = this.getRowDataForGrid();
         this.filteredMembers = this.alldata;
@@ -74,30 +77,19 @@ export class DashboardComponent implements OnInit {
     return this.bookService.getBooks();
   }
 
-  private getbuildCards(): cards[] {
-    this.cardsData = [
-      {
-        title: 'Total Books',
-        icon: 'menu_book',
-        value: this.books.length
-      },
-      {
-        title: 'Borrowed Books',
-        icon: 'layers',
-        value: this.books.filter(b => b.status === 'Borrowed').length
-      },
-      {
-        title: 'Overdue Books',
-        icon: 'warning',
-        value: this.books.filter(b => b.status === 'Overdue').length
-      },
-      {
-        title: 'Total Members',
-        icon: 'groups',
-        value: this.members.length
-      }
-    ];
-    return this.cardsData;
+  buildCards(books: Books[], members: Member[]): cards[] {
+    const states = {
+      totalBooks: books.length,
+      borrowedBooks: books.filter(res => res.status === 'Borrowed').length,
+      overdueBooks: books.filter(res => res.status === 'Overdue').length,
+      totalMembers: members.length
+    };
+
+    return dashboardCardDefinitions.map(def => ({
+      title: def.title,
+      icon: def.icon,
+      value: states[def.key as keyof typeof states] || 0
+    }))
   }
 
 
@@ -117,21 +109,39 @@ export class DashboardComponent implements OnInit {
       { field: 'dueDate', headerName: 'Overdue Date' },
       { field: 'status', headerName: 'Status' },
       { field: 'update', headerName: 'Update' },
-      { field: 'delete', headerName: 'Delete' }
+      {
+        field: 'delete', headerName: 'Delete',
+        cellRenderer: DeleteCellRenderer,
+        cellRendererParams: {
+          onDelete: (row: any) => this.onDeleteRow(row)
+        }
+      }
     ];
   }
 
-  // search(event: any) {
-  //   this.searchInputTrack = event.target.value.toLowerCase();
-  //   this.filteredMembers = this.alldata.filter((res) =>
-  //     res.memberName.toLowerCase().includes(this.searchInputTrack))
-  // }
   search(inputEle: HTMLInputElement) {
     this.searchText = inputEle.value.toLowerCase();
-    this.filteredMembers = this.alldata.filter((res) =>
+    this.filteredMembers = this.filteredMembers.filter((res) =>
       res.memberName.toLowerCase().includes(this.searchText))
   }
   resetData() {
     this.filteredMembers = this.alldata;
   }
+
+  onDeleteRow(data: any) {
+    console.log(data);
+    this.filteredMembers = this.filteredMembers.filter(
+      (res) => res.memberId !== data.memberId);
+  }
+
+  selectedRow: [] = [];
+  handleSelected(event: any) {
+    this.selectedRow = event;
+  }
+  deleteSelectedRows() {
+    this.filteredMembers = this.filteredMembers.filter((res) =>
+      !this.selectedRow.some((selected: any) => selected.memberId === res.memberId));
+    console.log(this.selectedRow);
+  }
+
 }

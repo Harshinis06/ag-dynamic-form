@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { AllCommunityModule, ModuleRegistry, RowSelectionMode, RowSelectionOptions } from 'ag-grid-community';
 import { ColDef } from 'ag-grid-community';
@@ -22,6 +22,8 @@ export class ClientAgGridComponent {
   @Input() rowData: any[] = [];
 
   @Input() colDefs: ColDef[] = [];
+
+  @Output() selectedRow =new EventEmitter<any>();
 
   paginationPageSize = 5;
   pagesizeoptions = [5, 10, 20, 50];
@@ -49,7 +51,13 @@ export class ClientAgGridComponent {
     this.gridAPI = params.api;
   }
 
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "multiRow",
+  rowSelection: RowSelectionOptions = {
+    mode: "multiRow"
   };
+
+  getSelectedRows() {
+    const selectedRows= this.gridAPI.getSelectedRows();
+    this.selectedRow.emit(selectedRows);
+  }
+ 
 }

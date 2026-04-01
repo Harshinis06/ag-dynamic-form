@@ -4,14 +4,21 @@
 <div>
     <mat-form-field appearance="outline">
         <mat-label>Search</mat-label>
-        <input matInput type="search" placeholder="Type to search..." #searchInput 
-        (keyup.enter)="search(searchInput)"  (input)="!searchInput.value && resetData()">
-        <button class="searchIcon" matSuffix mat-icon-button aria-label="Search" type="submit" (click)="search(searchInput)">
+        <input matInput type="search" placeholder="Type to search..." #searchInput (keyup.enter)="search(searchInput)"
+            (input)="!searchInput.value && resetData()">
+        <button class="searchIcon" matSuffix mat-icon-button aria-label="Search" type="submit"
+            (click)="search(searchInput)">
             <mat-icon matSuffix>search</mat-icon>
         </button>
     </mat-form-field>
 </div>
+<div class="action-bar">
+    <button mat-raised-button color="warn" (click)="deleteSelectedRows()">
+        Delete Selected
+    </button>
+</div>
 <div>
-    <app-client-ag-grid [rowData]="filteredMembers" [colDefs]="getColDefsForGrid()">
+    <app-client-ag-grid [rowData]="filteredMembers" [colDefs]="getColDefsForGrid()"
+        (selectedRow)="handleSelected($event)">
     </app-client-ag-grid>
 </div>
