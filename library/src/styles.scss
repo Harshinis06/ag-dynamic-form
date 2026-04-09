@@ -13,3 +13,13 @@ html {
 w-100 {
   width: 100%;
 }
+
+.mat-mdc-select-panel {
+  background-color: #e0eef5 !important;
+  color: #1a0707 !important;
+}
+
+.mat-mdc-select-panel .mat-mdc-option {
+  color: #000 !important;
+  opacity: 1 !important;
+}

@@ -1,86 +1,104 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, Input, NgModule, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { BookServiceService } from '../../services/books.service';
 import { forkJoin, Observable } from 'rxjs';
 import { Books } from '../../models/Books';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule, DatePipe, NgIf } from '@angular/common';
 import { SummeryCardsComponent } from '../../shared/summery-cards/summery-cards.component';
 import { MembersService } from '../../services/members.service';
 import { Member } from '../../models/Member';
 import { cards } from '../../models/cards';
 import { ClientAgGridComponent } from '../../shared/client-ag-grid/client-ag-grid.component';
-import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, NgForm } from '@angular/forms';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { DeleteCellRenderer } from '../../shared/deleteRendere.component';
 import { MatButtonModule } from '@angular/material/button';
 import { dashboardCardDefinitions } from './dashboard-cards.config';
+import { UpdateRenderer } from '../../shared/updateRenderer.component';
+import { MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
+import { ModalPopUpComponent } from '../../shared/modal-pop-up/modal-pop-up.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { UpdateDataComponent } from './update-data/update-data.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, SummeryCardsComponent, ClientAgGridComponent, DeleteCellRenderer,
-    FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatInputModule, MatButtonModule
-  ],
-  providers: [BookServiceService, MembersService],
+    FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule,
+    ModalPopUpComponent, MatSelectModule, MatDatepickerModule, MatNativeDateModule,UpdateDataComponent],
+  providers: [BookServiceService, MembersService, MatDatepickerModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
 
+  statusOptions = [
+    { value: 'overdue', label: 'Overdue' },
+    { value: 'borrowed', label: 'Borrowed' },
+    { value: 'returned', label: 'Returned' },
+  ]
+
   constructor(private bookService: BookServiceService,
     private memberService: MembersService
   ) { }
+  @ViewChild('EditMember') editTemplate!: ElementRef;
 
   searchText: string = '';
   books: Books[] = [];
   members: Member[] = [];
   cardsData: cards[] = [];
-  alldata: any[] = [];
+  membersData: any[] = [];
+  allData: any[] = [];
   filteredMembers: any[] = [];
+  editMemberData: [] = [];
+
+  readonly dialog = inject(MatDialog);
 
 
   ngOnInit() {
-    this.getAllBooks().subscribe((res) => {
-      this.books = res;
-      console.log(res);
-    })
-    this.getAllMembers().subscribe((res) => {
-      this.members = res;
-      console.log(this.members);
-    })
+     this.getAllMembers();
+  }
+
+  private getAllMembers(): any {
+    // this.memberService.getMembers().subscribe((res) => {
+    //   this.books = res;
+    //   console.log(res);
+    // })
+    // this.bookService.getBooks().subscribe((res) => {
+    //   this.members = res;
+    //   console.log(this.members);
+    // })
 
     forkJoin({
-      books: this.getAllBooks(),
-      members: this.getAllMembers()
+      books: this.bookService.getBooks(),
+      members: this.memberService.getMembers()
     }).subscribe({
       next: (res) => {
         this.books = res.books;
         this.members = res.members;
         this.cardsData = this.buildCards(this.books, this.members);
 
-        this.alldata = this.getRowDataForGrid();
-        this.filteredMembers = this.alldata;
+        this.membersData = this.getRowDataForGrid();
+        this.allData = [...this.membersData, ...this.books];
+        this.filteredMembers = this.membersData
       },
       error: (err) => {
         console.error('Error fetching data:', err);
       }
     })
+    }
 
-  }
-
-  private getAllMembers(): Observable<Member[]> {
-    return this.memberService.getMembers()
-  }
-
-  private getAllBooks(): Observable<Books[]> {
-    return this.bookService.getBooks();
-  }
+  // private getAllBooks(): Observable<Books[]> {
+  //   return this.bookService.getBooks();
+  // }
 
   buildCards(books: Books[], members: Member[]): cards[] {
     const states = {
       totalBooks: books.length,
-      borrowedBooks: books.filter(res => res.status === 'Borrowed').length,
+      borrowedBooks:books.filter(res=> res.status ==='Borrowed').length,
       overdueBooks: books.filter(res => res.status === 'Overdue').length,
       totalMembers: members.length
     };
@@ -92,13 +110,11 @@ export class DashboardComponent implements OnInit {
     }))
   }
 
-
   getRowDataForGrid(): Member[] {
     return this.members.map((res) => ({
       ...res,
     }));
   }
-
 
   getColDefsForGrid() {
     return [
@@ -108,7 +124,13 @@ export class DashboardComponent implements OnInit {
       { field: 'borrowedDate', headerName: 'Borrowed Date' },
       { field: 'dueDate', headerName: 'Overdue Date' },
       { field: 'status', headerName: 'Status' },
-      { field: 'update', headerName: 'Update' },
+      {
+        field: 'update', headerName: 'Update',
+        cellRenderer: UpdateRenderer,
+        cellRendererParams: {
+          onEdit: (row: any) => this.onEditRow(row)
+        }
+      },
       {
         field: 'delete', headerName: 'Delete',
         cellRenderer: DeleteCellRenderer,
@@ -125,7 +147,7 @@ export class DashboardComponent implements OnInit {
       res.memberName.toLowerCase().includes(this.searchText))
   }
   resetData() {
-    this.filteredMembers = this.alldata;
+    this.filteredMembers = this.membersData;
   }
 
   onDeleteRow(data: any) {
@@ -142,6 +164,31 @@ export class DashboardComponent implements OnInit {
     this.filteredMembers = this.filteredMembers.filter((res) =>
       !this.selectedRow.some((selected: any) => selected.memberId === res.memberId));
     console.log(this.selectedRow);
+  }
+
+
+  onEditRow(data: any) {
+    const selectedMember = this.filteredMembers.find((res) => res.memberId === data.memberId);
+    this.editMemberData = { ...selectedMember };
+    const dialogRef = this.dialog.open(ModalPopUpComponent, {
+      data: {
+        title: 'Edit Member',
+        contentTemplate: this.editTemplate,
+        context: this.editMemberData
+      },
+      height: '400px',
+      width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      const updatedMember = result?.context;
+      const formattedDueDate = updatedMember?.dueDate ? new DatePipe('en-US').transform(updatedMember.dueDate, 'yyyy-MM-dd') : undefined;
+      updatedMember.dueDate = formattedDueDate;
+
+      this.filteredMembers = updatedMember ? this.filteredMembers.map((res) =>
+        res.memberId === updatedMember.memberId ? updatedMember : res) : this.filteredMembers;
+      console.log(result);
+    });
   }
 
 }

@@ -1,0 +1,33 @@
+<form class="edit-form" >
+    <mat-form-field appearance="outline">
+        <input matInput [(ngModel)]="filteredMember.memberName" name="memberName" readonly />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <input matInput [(ngModel)]="filteredMember.memberId" name="memberId" readonly />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Book ID</mat-label>
+        <input matInput [(ngModel)]="filteredMember.bookId" name="bookId" readonly />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" *ngIf="statusOptions.length > 0">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="filteredMember.status" name="status" panelClass="custom-select-panel">
+            @for (state of statusOptions; track state) {
+            <mat-option [value]="state.value">
+                {{ state.label }}
+            </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Overdue Date</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="filteredMember.dueDate" name="dueDate" />
+        <mat-hint>YYYY/MM/DD</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+</form>

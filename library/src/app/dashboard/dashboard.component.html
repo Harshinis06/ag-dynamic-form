@@ -22,3 +22,7 @@
         (selectedRow)="handleSelected($event)">
     </app-client-ag-grid>
 </div>
+
+<ng-template #EditMember let-filteredMember>
+    <app-update-data [filteredMember]="filteredMember" [statusOptions]="statusOptions"></app-update-data>
+</ng-template>
